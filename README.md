@@ -1,6 +1,6 @@
-![example workflow](https://github.com/npatsiatzis/digital_filters/actions/workflows/regression.yml/badge.svg)
-![example workflow](https://github.com/npatsiatzis/digital_filters/actions/workflows/coverage.yml/badge.svg)
-![example workflow](https://github.com/npatsiatzis/digital_filters/actions/workflows/formal.yml/badge.svg)
+![example workflow](https://github.com/npatsiatzis/fir/actions/workflows/regression.yml/badge.svg)
+![example workflow](https://github.com/npatsiatzis/fir/actions/workflows/coverage.yml/badge.svg)
+![example workflow](https://github.com/npatsiatzis/fir/actions/workflows/formal.yml/badge.svg)
 
 ### FIR filter (transposed form) RTL implementation
 
