@@ -1,0 +1,17 @@
+[tasks]
+task_bmc
+
+[options]
+task_bmc: mode prove
+task_bmc: depth 20	
+
+[engines]
+task_bmc: smtbmc
+
+[script]
+ghdl --std=08 -gg_taps=4 -gg_i_w=9 -gg_t_w=8 -gg_o_w=23 -gg_coeff_A=-1 -gg_coeff_B=-22 -gg_coeff_C=13 -gg_coeff_D=-44 fir_transposed.vhd fir_transposed.psl -e fir_transposed
+prep -top fir_transposed
+
+[files]
+fir_transposed.psl
+fir_transposed.vhd

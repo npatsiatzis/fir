@@ -1,0 +1,40 @@
+library ieee;
+use ieee.numeric_std.all;
+
+vunit formal_test(fir_transposed(rtl)) {
+
+
+
+	default clock is rising_edge(i_clk);
+
+	signal random_data: signed(g_i_w -1 downto 0);
+	signal random_tap: integer range 0 to g_taps-1;
+	attribute anyconst : boolean;
+	attribute anyconst of random_data : signal is true;
+	attribute anyconst of random_tap : signal is true;
+
+	type t_taps is array(0 to g_taps-1) of integer;
+	constant taps : t_taps :=(g_coeff_A,g_coeff_B,g_coeff_C,g_coeff_D);
+
+	--#####################################################
+
+	-------------------
+	--ASSERT PROPERTIES
+	-------------------
+	check_r_mac_max: assert always (({r_mac(g_taps-1) = prev(r_mul(g_taps-1))})abort i_rst = '1');
+	check_r_mac: assert always (((random_tap =2 and signed(i_sample) = random_data) -> next[3](r_mac(random_tap) = prev(r_mac(random_tap+1)) + random_data*taps(2)))abort i_rst = '1');
+	check_r_sample: assert always (({signed(i_sample) = random_data} |=> {r_sample = random_data})abort i_rst = '1');
+	check_r_mul: assert always (({r_mul(random_tap) = prev(r_sample) * prev(r_tap(random_tap))})abort i_rst = '1');
+	check_r_mul_func: assert always (({random_tap = 1 and r_sample = random_data} |=> {r_mul(random_tap) = taps(1)* random_data})abort i_rst = '1');
+	check_result: assert always (({o_result = std_ulogic_vector(r_mac(0))})abort i_rst = '1');
+
+	--#####################################################
+
+	-------------------
+	--ASSUME PROPERTIES
+	-------------------
+	assume {i_rst = '1'};
+	assume always {i_en = '1'};
+	assume {i_rst ='1'; signed(i_sample) = random_data and i_en = '1'};
+	--#####################################################
+}
