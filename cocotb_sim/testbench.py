@@ -97,7 +97,6 @@ async def test(dut):
 		if(full == True):
 			break
 		else:
-			# inputs.randomize()
 			while (inputs.data in covered_value):
 				inputs.randomize()
 			if(inputs.data != 0):
@@ -120,11 +119,8 @@ async def test(dut):
 
 	for i in range(len(sample_lst)):
 		if(i>= g_taps):
-			# pass
-			# assert not (int(sum(sample_lst[(i-2**g_m_W +1):i+1]) / (2**g_m_W)) != fir_lst[i]),"Different expected to actual read data"
 			assert not (np.dot(sample_lst[i- g_taps +1 :i+1][::-1],fir_coeff) != fir_lst[i]),"Different expected to actual read data"
-		else:
-			# assert not (int(sum(sample_lst[0:i+1]) / (2**g_m_W)) != fir_lst[i]),"Different expected to actual read data"
+		else:		
 			assert not (np.dot(sample_lst[0:i+1][::-1],fir_coeff[0:i+1]) != fir_lst[i]),"Different expected to actual read data"
 
 	coverage_db.report_coverage(cocotb.log.info,bins=True)

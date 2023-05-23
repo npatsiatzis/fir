@@ -14,4 +14,4 @@ prep -top fir_transposed
 
 [files]
 fir_transposed.psl
-fir_transposed.vhd
+../rtl/fir_transposed.vhd

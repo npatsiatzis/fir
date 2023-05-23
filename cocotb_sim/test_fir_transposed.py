@@ -23,7 +23,7 @@ def test_spi(g_i_W,g_coeff_A,g_coeff_B,g_coeff_C,g_coeff_D):
     module = "testbench"
     toplevel = "fir_transposed"   
     vhdl_sources = [
-        os.path.join(rtl_dir, "fir_transposed.vhd"),
+        os.path.join(rtl_dir, "../rtl/fir_transposed.vhd"),
         ]
 
 
