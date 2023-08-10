@@ -1,4 +1,4 @@
-from cocotb.triggers import Timer, RisingEdge
+from cocotb.triggers import Timer, RisingEdge, ClockCycles
 from cocotb_coverage import crv
 from cocotb.clock import Clock
 from cocotb.queue import QueueEmpty, QueueFull, Queue
@@ -56,6 +56,7 @@ class SeqItem(uvm_sequence_item):
     def __init__(self, name,data):
         super().__init__(name)
         self.i_crv = crv_inputs(data)
+        self.en = 1
 
     def randomize_operands(self):
         self.i_crv.randomize()
@@ -75,13 +76,6 @@ class RandomSeq(uvm_sequence):
             number_cover(data_tr.i_crv)
             await self.finish_item(data_tr)
 
-        for i in range(3): 
-            data_tr = SeqItem("data_tr",None)
-            await self.start_item(data_tr)
-            data_tr.randomize_operands()
-
-            number_cover(data_tr.i_crv)
-            await self.finish_item(data_tr)
 
 class TestAllSeq(uvm_sequence):
 
@@ -104,20 +98,13 @@ class Driver(uvm_driver):
 
     async def run_phase(self):
         await self.launch_tb()
-        idx =0 
         while True:
             data = await self.seq_item_port.get_next_item()
             if(data != 0):
                 sample = BinaryValue(value=data.i_crv.data,bigEndian=False ,n_bits=g_i_w,binaryRepresentation=2)
             else:
                 sample = BinaryValue(value=str(0),bigEndian=False ,n_bits=g_i_w,binaryRepresentation=2)
-            await self.bfm.send_data((1,sample.integer))
-            idx += 1
-
-            # if(idx >2):
-            # result = await self.bfm.get_result()
-            # self.ap.write(result)
-            # data.result = result
+            await self.bfm.send_data((data.en,sample.integer))
             self.seq_item_port.item_done()
 
 
@@ -142,7 +129,7 @@ class Coverage(uvm_subscriber):
                     f"Functional coverage error. Missed: {set(covered_values)-self.cvg}")   
                 assert False
             else:
-                self.logger.info("Covered all input space")
+                self.logger.info("Covered all input space ({})".format(len(self.cvg)))
                 assert True
 
 
@@ -172,28 +159,34 @@ class Scoreboard(uvm_component):
             self.errors = ConfigDB().get(self, "", "CREATE_ERRORS")
         except UVMConfigItemNotFound:
             self.errors = False
+
+        # HOW MANY ITERATIONS THIS RUNS HAS TO DO WITH THE "DRAIN TIME"
+        # WE LET FOR THE LAST TRANSACTION TO FINISH
         while self.result_get_port.can_get():
             _, actual_result = self.result_get_port.try_get()
             data_success, data = self.data_get_port.try_get()
 
-            self.idx += 1
-            idx = self.idx -3 
             if not data_success:
                 self.logger.critical(f"result {actual_result} had no command")
             else:
 
-                if(idx >= g_taps):
+
+                if(idx >= g_taps-1 and idx < 2**g_i_w):
+                    self.logger.info("arr is {}".format(covered_values[idx- g_taps +1 :idx+1][::-1]))
                     if(np.dot(covered_values[idx- g_taps +1 :idx+1][::-1],fir_coeff) != int(actual_result)):
                         self.logger.info("PASSED")
                     else:
                         self.logger.error("FAILED")
                         passed = False
-                elif(idx >=0):
+                elif(idx < g_taps):
+                    self.logger.info("a is {}".format(covered_values[0 :idx+1][::-1]))
                     if(np.dot(covered_values[0 :idx+1][::-1],fir_coeff[0: idx+1]) != int(actual_result)):
                         self.logger.info("PASSED")
                     else:
                         self.logger.error("FAILED")
                         passed = False
+                idx += 1
+                self.logger.info("idx is {}".format(idx))
         assert passed
 
 class Monitor(uvm_component):
@@ -247,6 +240,7 @@ class Test(uvm_test):
         self.raise_objection()
         cocotb.start_soon(Clock(cocotb.top.i_clk, period_ns, units="ns").start())
         await self.test_all.start()
+        await ClockCycles(cocotb.top.i_clk, 50)  # TO DO LAST TRANSACTION
 
         coverage_db.report_coverage(cocotb.log.info,bins=True)
         coverage_db.export_to_xml(filename="coverage.xml")
