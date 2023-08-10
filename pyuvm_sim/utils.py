@@ -61,9 +61,9 @@ class FirBfm(metaclass=utility_classes.Singleton):
     async def result_mon_bfm(self):
         await RisingEdge(self.dut.i_en)
         
+        await RisingEdge(self.dut.i_clk)    # to start capturing from the correct result
         await RisingEdge(self.dut.i_clk)
         await RisingEdge(self.dut.i_clk)
-        # await RisingEdge(self.dut.i_clk)
         while True:
             result = BinaryValue(value=str(self.dut.o_result.value),binaryRepresentation=2)
             self.result_mon_queue.put_nowait(result.integer)

@@ -75,6 +75,14 @@ class RandomSeq(uvm_sequence):
             number_cover(data_tr.i_crv)
             await self.finish_item(data_tr)
 
+        for i in range(3): 
+            data_tr = SeqItem("data_tr",None)
+            await self.start_item(data_tr)
+            data_tr.randomize_operands()
+
+            number_cover(data_tr.i_crv)
+            await self.finish_item(data_tr)
+
 class TestAllSeq(uvm_sequence):
 
     async def body(self):
@@ -107,9 +115,9 @@ class Driver(uvm_driver):
             idx += 1
 
             # if(idx >2):
-            result = await self.bfm.get_result()
-            self.ap.write(result)
-            data.result = result
+            # result = await self.bfm.get_result()
+            # self.ap.write(result)
+            # data.result = result
             self.seq_item_port.item_done()
 
 
@@ -176,15 +184,15 @@ class Scoreboard(uvm_component):
 
                 if(idx >= g_taps):
                     if(np.dot(covered_values[idx- g_taps +1 :idx+1][::-1],fir_coeff) != int(actual_result)):
-                        self.logger.info("PASSED {}".format(idx))
+                        self.logger.info("PASSED")
                     else:
-                        self.logger.error("FAILED {}".format(idx))
+                        self.logger.error("FAILED")
                         passed = False
                 elif(idx >=0):
                     if(np.dot(covered_values[0 :idx+1][::-1],fir_coeff[0: idx+1]) != int(actual_result)):
-                         self.logger.info("PASSED {}".format(idx))
+                        self.logger.info("PASSED")
                     else:
-                        self.logger.error("FAILED {}".format(idx))
+                        self.logger.error("FAILED")
                         passed = False
         assert passed
 
@@ -211,6 +219,7 @@ class Env(uvm_env):
         self.seqr = uvm_sequencer("seqr", self)
         ConfigDB().set(None, "*", "SEQR", self.seqr)
         self.driver = Driver.create("driver", self)
+        self.result_mon = Monitor("result_mon", self, "get_result")
         self.data_mon = Monitor("data_mon", self, "get_data")
         self.coverage = Coverage("coverage", self)
         self.scoreboard = Scoreboard("scoreboard", self)
@@ -219,7 +228,8 @@ class Env(uvm_env):
         self.driver.seq_item_port.connect(self.seqr.seq_item_export)
         self.data_mon.ap.connect(self.scoreboard.data_export)
         self.data_mon.ap.connect(self.coverage.analysis_export)
-        self.driver.ap.connect(self.scoreboard.result_export)
+        # self.driver.ap.connect(self.scoreboard.result_export)
+        self.result_mon.ap.connect(self.scoreboard.result_export)
 
 
 @pyuvm.test()
