@@ -9,7 +9,7 @@ sim_args = "--wave=wave.ghw"
 
 tests_dir = os.path.abspath(os.path.dirname(__file__)) #gives the path to the test(current) directory in which this test.py file is placed
 rtl_dir = tests_dir                                    #path to hdl folder where .vhdd files are placed
-
+# or better yet make rtl_dir = tests_dir+"../rtl/VHDL/S"
       
 
 #run tests with generic values for length
@@ -23,7 +23,7 @@ def test_spi(g_i_W,g_coeff_A,g_coeff_B,g_coeff_C,g_coeff_D):
     module = "testbench"
     toplevel = "fir_transposed"   
     vhdl_sources = [
-        os.path.join(rtl_dir, "../rtl/fir_transposed.vhd"),
+        os.path.join(rtl_dir, "../rtl/VHDL/fir_transposed.vhd"),
         ]
 
 

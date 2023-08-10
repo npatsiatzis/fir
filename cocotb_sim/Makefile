@@ -6,7 +6,7 @@ TOPLEVEL_LANG ?= vhdl
 EXTRA_ARGS += --std=08
 SIM_ARGS += --wave=wave.ghw
 
-VHDL_SOURCES += $(PWD)/../rtl/fir_transposed.vhd
+VHDL_SOURCES += $(PWD)/../rtl/VHDL/fir_transposed.vhd
 # use VHDL_SOURCES for VHDL files
 
 # TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
@@ -16,6 +16,9 @@ VHDL_SOURCES += $(PWD)/../rtl/fir_transposed.vhd
 test:
 		rm -rf sim_build
 		$(MAKE) sim MODULE=testbench TOPLEVEL=fir_transposed
+		
+lint: $(VHDL_SOURCES)
+	vsg --style jcl -f $^
 
 clean_dir:
 		rm -f wave.*
