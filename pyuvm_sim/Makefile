@@ -12,7 +12,6 @@ VHDL_SOURCES += $(PWD)/../rtl/VHDL/fir_transposed.vhd
 # TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
 # MODULE is the basename of the Python test file
 
-
 test:
 		rm -rf sim_build
 		$(MAKE) sim MODULE=tb TOPLEVEL=fir_transposed

@@ -50,7 +50,7 @@ class crv_inputs(crv.Randomized):
         self.data = data
         self.add_rand("data",list(range(-2**(g_i_w-1),2**(g_i_w-1))))
 
-# Sequence classes
+# Sequence item
 class SeqItem(uvm_sequence_item):
 
     def __init__(self, name,data):
@@ -62,9 +62,10 @@ class SeqItem(uvm_sequence_item):
         self.i_crv.randomize()
 
 
+# Sequence that generates items coverage-based
+# Until we have covered the whole input space
 class RandomSeq(uvm_sequence):
     async def body(self):
-        # while full_cross != True:
         while len(covered_values) != 2**g_i_w:
             data_tr = SeqItem("data_tr",None)
             await self.start_item(data_tr)
@@ -76,18 +77,18 @@ class RandomSeq(uvm_sequence):
             number_cover(data_tr.i_crv)
             await self.finish_item(data_tr)
 
-
+# A virtual sequence that starts other sequences
+# The sequencer that starts the non-virtual sequences 
+# Is not virtual here, but an actual sequencer handle
+# That we retrieve from the config. db
 class TestAllSeq(uvm_sequence):
 
     async def body(self):
         seqr = ConfigDB().get(None, "", "SEQR")
         random = RandomSeq("random")
         await random.start(seqr)
-# 
+ 
 class Driver(uvm_driver):
-
-    def build_phase(self):
-        self.ap = uvm_analysis_port("ap", self)
 
     def start_of_simulation_phase(self):
         self.bfm = FirBfm()
@@ -221,7 +222,6 @@ class Env(uvm_env):
         self.driver.seq_item_port.connect(self.seqr.seq_item_export)
         self.data_mon.ap.connect(self.scoreboard.data_export)
         self.data_mon.ap.connect(self.coverage.analysis_export)
-        # self.driver.ap.connect(self.scoreboard.result_export)
         self.result_mon.ap.connect(self.scoreboard.result_export)
 
 
@@ -239,9 +239,13 @@ class Test(uvm_test):
     async def run_phase(self):
         self.raise_objection()
         cocotb.start_soon(Clock(cocotb.top.i_clk, period_ns, units="ns").start())
+        # Start/Execute the virtual sequence
+        # When no sequencer handle is provided in start method of a sequence
+        # Then start() just executes the relevant body() method
         await self.test_all.start()
         await ClockCycles(cocotb.top.i_clk, 50)  # TO DO LAST TRANSACTION
 
         coverage_db.report_coverage(cocotb.log.info,bins=True)
         coverage_db.export_to_xml(filename="coverage.xml")
         self.drop_objection()
+

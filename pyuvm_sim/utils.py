@@ -9,7 +9,6 @@ from pyuvm import utility_classes
 from cocotb.binary import BinaryValue
 
 
-
 class FirBfm(metaclass=utility_classes.Singleton):
     def __init__(self):
         self.dut = cocotb.top
