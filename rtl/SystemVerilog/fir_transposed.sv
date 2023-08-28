@@ -6,15 +6,15 @@
 
 module fir_transposed
     #(
-        parameter int G_TAPS = 4,
-        parameter int G_I_W = 9,
-        parameter int G_T_W = 8,
-        parameter int G_O_W = 23,
+        parameter int G_TAPS /*verilator public*/= 4,
+        parameter int G_I_W /*verilator public*/ = 9,
+        parameter int G_T_W /*verilator public*/ = 8,
+        parameter int G_O_W /*verilator public*/ = 23,
 
-        parameter logic signed [G_T_W -1 : 0] G_COEFF_A = -1,
-        parameter logic signed [G_T_W -1 : 0] G_COEFF_B = -22,
-        parameter logic signed [G_T_W -1 : 0] G_COEFF_C = 13,
-        parameter logic signed [G_T_W -1 : 0] G_COEFF_D = -44
+        parameter logic signed [G_T_W -1 : 0] G_COEFF_A /*verilator public*/ = -1,
+        parameter logic signed [G_T_W -1 : 0] G_COEFF_B /*verilator public*/ = -22,
+        parameter logic signed [G_T_W -1 : 0] G_COEFF_C /*verilator public*/ = 13,
+        parameter logic signed [G_T_W -1 : 0] G_COEFF_D /*verilator public*/ = -44
     )
 
     (
@@ -23,7 +23,7 @@ module fir_transposed
         input  logic i_en,
         input  logic [G_I_W - 1 : 0] i_sample,
 
-        output logic [G_O_W - 1 : 0] o_result
+        output logic signed [G_O_W - 1 : 0] o_result
     );
 
     // split long line (over 100 character long originally)
@@ -35,23 +35,26 @@ module fir_transposed
 
 
 
-    logic [G_I_W - 1 : 0] r_sample;
+    logic signed [G_I_W - 1 : 0] r_sample;
 
     always_ff @(posedge i_clk) begin : fir_transp
         if(i_rst) begin
             r_sample <= '0;
         end else begin
-            r_sample <= i_sample;
+            if(i_en) begin
+                r_sample <= i_sample;
 
-            for (int i =0; i < G_TAPS; i++) begin
-                if(i < G_TAPS - 1) begin
+                for (int i =0; i < G_TAPS; i++) begin
                     r_mul_res[i] <= r_sample * r_tap_arr[i];
-                    // size cast to appease verilator, no problem though without it
-                    r_final_res[i] <= G_O_W'(r_mul_res[i]) + r_final_res[i-1];
-                end else begin
-                    r_mul_res[i] <= r_sample * r_tap_arr[i];
-                    // size cast to appease verilator, no problem though without it
-                    r_final_res[i] <= G_O_W'(r_mul_res[i]);
+                    
+                    if(i < G_TAPS - 1) begin
+                        // size cast to appease verilator, no problem though without it
+                        r_final_res[i] <= G_O_W'(r_mul_res[i]) + r_final_res[i+1];
+                    end else begin
+                        // r_mul_res[i] <= r_sample * r_tap_arr[i];
+                        // size cast to appease verilator, no problem though without it
+                        r_final_res[i] <= G_O_W'(r_mul_res[i]);
+                    end
                 end
             end
         end
