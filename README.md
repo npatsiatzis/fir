@@ -13,4 +13,5 @@
 -- Functional verification with methodologies:
 - [cocotb](https://github.com/npatsiatzis/fir/tree/main/cocotb_sim)
 - [pyuvm](https://github.com/npatsiatzis/fir/tree/main/pyuvm_sim)
+- [verilator](https://github.com/npatsiatzis/fir/tree/main/verilator_sim)
 - [formal](https://github.com/npatsiatzis/fir/tree/main/formal)
