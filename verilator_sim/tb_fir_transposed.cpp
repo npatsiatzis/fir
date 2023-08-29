@@ -3,9 +3,11 @@
 #include <iostream>
 #include <cstdlib>
 #include <memory>
+#include <set>
 #include <vector>
 #include <verilated.h>
 #include <verilated_vcd_c.h>
+#include <verilated_cov.h>
 #include "Vfir_transposed.h"
 #include "Vfir_transposed_fir_transposed.h"   //to get parameter values, after they've been made visible in SV
 
@@ -359,7 +361,11 @@ int main(int argc, char** argv, char** env) {
 
     while (outCoverage->is_full_coverage() == false) {
     // while(sim_time < MAX_SIM_TIME*20) {
-
+        // random reset 
+        // 0-> all 0s
+        // 1 -> all 1s
+        // 2 -> all random
+        Verilated::randReset(2); 
         dut_reset(dut,sim_time);
         
 
@@ -393,6 +399,8 @@ int main(int argc, char** argv, char** env) {
         sim_time++;
     }
     scb->checkPhase();
+
+    VerilatedCov::write();
     m_trace->close();  
     exit(EXIT_SUCCESS);
 }
