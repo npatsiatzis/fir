@@ -1,3 +1,5 @@
+![example workflow](https://github.com/npatsiatzis/fir/actions/workflows/regression.yml/badge.svg)
+
 ### FIR filter (transposed form) RTL implementation
 
 

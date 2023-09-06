@@ -3,6 +3,8 @@
 ![example workflow](https://github.com/npatsiatzis/fir/actions/workflows/formal.yml/badge.svg)
 ![example workflow](https://github.com/npatsiatzis/fir/actions/workflows/regression_pyuvm.yml/badge.svg)
 ![example workflow](https://github.com/npatsiatzis/fir/actions/workflows/coverage_pyuvm.yml/badge.svg)
+![example workflow](https://github.com/npatsiatzis/fir/actions/workflows/regression.yml/badge.svg)
+[![codecov](https://codecov.io/gh/npatsiatzis/fir/graph/badge.svg?token=RZL1230739)](https://codecov.io/gh/npatsiatzis/fir)
 
 ### FIR filter (transposed form) RTL implementation
 
