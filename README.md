@@ -9,6 +9,10 @@
 ### FIR filter (transposed form) RTL implementation
 
 
+### Repo Structure
+
+This is a short tabular description of the contents of each folder in the repo.
+
 | Folder | Description |
 | ------ | ------ |
 | [rtl/SystemVerilog](https://github.com/npatsiatzis/fir/tree/main/rtl/SystemVerilog) | SV RTL implementation files |
