@@ -8,16 +8,6 @@
 
 ### FIR filter (transposed form) RTL implementation
 
--- RTL code in:
-- [VHDL](https://github.com/npatsiatzis/fir/tree/main/rtl/VHDL)
-- [SystemVerilog](https://github.com/npatsiatzis/fir/tree/main/rtl/SystemVerilog)
-
--- Functional verification with methodologies:
-- [cocotb](https://github.com/npatsiatzis/fir/tree/main/cocotb_sim)
-- [pyuvm](https://github.com/npatsiatzis/fir/tree/main/pyuvm_sim)
-- [verilator](https://github.com/npatsiatzis/fir/tree/main/verilator_sim)
-- [formal](https://github.com/npatsiatzis/fir/tree/main/formal)
-
 
 | Folder | Description |
 | ------ | ------ |
@@ -26,9 +16,9 @@
 | [cocotb_sim](https://github.com/npatsiatzis/fir/tree/main/cocotb_sim) | Functional Verification with CoCoTB (Python-based) |
 | [pyuvm_sim](https://github.com/npatsiatzis/fir/tree/main/pyuvm_sim) | Functional Verification with pyUVM (Python impl. of UVM standard) |
 | [verilator_sim](https://github.com/npatsiatzis/fir/tree/main/verilator_sim) | Functional Verification with Verilator (C++ based) |
+| [formal](https://github.com/npatsiatzis/fir/tree/main/formal) | Formal Verification using  PSL properties and [YoysHQ/sby](https://github.com/YosysHQ/oss-cad-suite-build) |
 
 
-<!-- 
 This is the tree view of the strcture of the repo.
 <pre>
 <font size = "2">
@@ -45,8 +35,10 @@ This is the tree view of the strcture of the repo.
  href="https://github.com/npatsiatzis/fir/tree/main/pyuvm_sim">pyuvm_sim</a></b></font>
 │   ├── Makefile
 │   └── python files
-└── <font size = "4"><b><a href="https://github.com/npatsiatzis/fir/tree/main/verilator_sim">verilator_sim</a></b></font>
+├── <font size = "4"><b><a href="https://github.com/npatsiatzis/fir/tree/main/verilator_sim">verilator_sim</a></b></font>
+│   ├── Makefile
+│   └── verilator tb
+└── <font size = "4"><b><a href="https://github.com/npatsiatzis/fifo_synchronous/tree/main/formal">formal</a></b></font>
     ├── Makefile
-    └── verilator tb
-
-</pre> -->
+    └── PSL properties file, scripts
+</pre>
