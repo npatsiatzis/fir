@@ -13,12 +13,11 @@ rtl_dir = tests_dir                                    #path to hdl folder where
       
 
 #run tests with generic values for length
-@pytest.mark.parametrize("g_i_W", [str(i) for i in range(7,9,1)])
 @pytest.mark.parametrize("g_coeff_A", [str(i) for i in range(-32,31,40)])
 @pytest.mark.parametrize("g_coeff_B", [str(i) for i in range(-32,31,35)])
 @pytest.mark.parametrize("g_coeff_C", [str(i) for i in range(-32,31,25)])
 @pytest.mark.parametrize("g_coeff_D", [str(i) for i in range(-32,31,15)])
-def test_spi(g_i_W,g_coeff_A,g_coeff_B,g_coeff_C,g_coeff_D):
+def test_fir(g_coeff_A,g_coeff_B,g_coeff_C,g_coeff_D):
 
     module = "tb"
     toplevel = "fir_transposed"   
@@ -28,7 +27,6 @@ def test_spi(g_i_W,g_coeff_A,g_coeff_B,g_coeff_C,g_coeff_D):
 
 
     parameter = {}
-    parameter['g_i_W'] = g_i_W
     parameter['g_coeff_A'] = g_coeff_A
     parameter['g_coeff_B'] = g_coeff_B
     parameter['g_coeff_C'] = g_coeff_C
