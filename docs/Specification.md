@@ -1,4 +1,3 @@
-
 ## Requirements Specification
 
 
@@ -22,7 +21,7 @@
    Number of bits of samples.
 2. **Tap**
    
-   A FIR's taps are coefficient values. The number of taps is the amount of memory (length) needed to implement the filter.
+   A FIR's taps are the coefficient values. The number of taps is the amount of memory (length) needed to implement the filter.
 
 ### 3. APPLICABLE DOCUMENTS 
 
@@ -71,22 +70,15 @@ Does not apply.
 
    | Param. Name | Description |
    | :------: | :------: |
-   | word width | width of the CPU data interface |
-   | baud rate | symbol(bits) / sec |
-   | system clock frequency | frequency of the clock provided to the fir filter core |
-   | oversample rate | rate for which the receiver oversamples the line (i.e multiple of the baud rate) |
-   | parity type | even or odd parity of the word 
+   | g_i_w | sample width |
+   | g_t_w | tap coefficient width |
+   | g_o_w | filter output width |
+   | g_taps | number of taps |
+   | g_coeff_{a:...}  | coefficient value | 
 
 1. **CPU interface**
 
-   The CPU shall write into the fir filter data for transmission and also read from the receive register.
-
-   | addr | we (+ stb) | Description |
-   | :------: | :------: | :------: | 
-   | 0 | 1 | set word to transmit |
-   | 1 | 0 | read word from receiver |
-
-   (* Obviously, only the bare minimum of fir filter features are implemented, namely the transmit and receive   functionality).
+   Simple data valid interface.
 
 ### 9. PERFORMANCE
 
